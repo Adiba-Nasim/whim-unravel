@@ -18,12 +18,14 @@ Write 3-4 sentences as The Oracle. Do two things:
 Do NOT use emojis. Do NOT use generic phrases like "I think you'll enjoy" or "you might like".
 Do NOT give away plot twists or endings. Keep it under 90 words. No quotation marks needed.`;
 
-  const fetchWithRetry = async (retries = 3, delay = 2000) => {
+  const fetchWithRetry = async (retries = 3, initialDelay = 2000) => {
+    let currentDelay = initialDelay;
+
     for (let i = 0; i < retries; i++) {
       try {
         const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`
-          ,{
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`,
+          {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -34,9 +36,9 @@ Do NOT give away plot twists or endings. Keep it under 90 words. No quotation ma
         );
 
         if (res.status === 429) {
-          console.warn(`Gemini 429 — retrying in ${delay}ms (attempt ${i + 1})`);
-          await new Promise((r) => setTimeout(r, delay));
-          delay *= 2;
+          console.warn(`Gemini 429 — retrying in ${currentDelay}ms (attempt ${i + 1})`);
+          await new Promise((r) => setTimeout(r, currentDelay));
+          currentDelay *= 2;
           continue;
         }
 
@@ -48,8 +50,8 @@ Do NOT give away plot twists or endings. Keep it under 90 words. No quotation ma
       } catch (err) {
         console.warn("Oracle fetch error:", err);
         if (i === retries - 1) return "The stars have aligned. This is your story.";
-        await new Promise((r) => setTimeout(r, delay));
-        delay *= 2;
+        await new Promise((r) => setTimeout(r, currentDelay));
+        currentDelay *= 2;
       }
     }
     return "The stars have aligned. This is your story.";
