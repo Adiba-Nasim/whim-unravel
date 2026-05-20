@@ -1,55 +1,45 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function MusicPlayer() {
+export function MusicPlayer() {
   const audioRef = useRef(null);
-  const [muted, setMuted] = useState(false);
-  const [started, setStarted] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const hasStarted = useRef(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     audio.volume = 0.35;
 
     const handleTimeUpdate = () => {
-      // Loop back to start at 40 seconds
       if (audio.currentTime >= 40) {
         audio.currentTime = 0;
         audio.play();
       }
     };
-
     audio.addEventListener("timeupdate", handleTimeUpdate);
     return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
   useEffect(() => {
-    if (started) return;
+    const audio = audioRef.current;
 
     const startAudio = () => {
-      audioRef.current?.play().catch(() => {});
-      setStarted(true);
+      if (hasStarted.current) return;
+      hasStarted.current = true;
+      audio.play().then(() => setPlaying(true)).catch(() => {});
     };
 
-    // Auto-play on first user interaction
     const events = ["click", "touchstart", "keydown"];
-    events.forEach(event => {
-      window.addEventListener(event, startAudio, { once: true });
-    });
-
-    return () => {
-      events.forEach(event => {
-        window.removeEventListener(event, startAudio);
-      });
-    };
-  }, [started]);
+    events.forEach(e => window.addEventListener(e, startAudio, { once: true }));
+    return () => events.forEach(e => window.removeEventListener(e, startAudio));
+  }, []);
 
   const toggle = () => {
     const audio = audioRef.current;
     if (audio.paused) {
-      audio.play();
-      setMuted(false);
+      audio.play().then(() => setPlaying(true)).catch(() => {});
     } else {
       audio.pause();
-      setMuted(true);
+      setPlaying(false);
     }
   };
 
@@ -57,7 +47,7 @@ export default function MusicPlayer() {
     <>
       <audio ref={audioRef} src="/oracle-theme.mp3" />
       <button className="music-btn" onClick={toggle} title="Toggle music">
-        {muted ? "🔇" : "♫"}
+        {playing ? "♫" : "🔇"}
       </button>
     </>
   );
