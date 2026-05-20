@@ -112,10 +112,10 @@
 
 .speaker-label {
   font-family: var(--font-stamp);
-  font-size: 1.0rem;
+  font-size: 1.5rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--dark-rose);
+  color: var(--cream);
   margin-bottom: 1rem;
   opacity: 0.8;
 }

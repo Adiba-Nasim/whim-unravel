@@ -100,9 +100,9 @@
 .ritual-btn {
   position: relative;
   z-index: 10;
-  background: rgba(217, 166, 71, 0.277);
+  background: rgba(217, 166, 71, 0.441);
   border: 1px solid rgba(217, 166, 71, 0.45);
-  color: var(--gold);
+  color: var(--parchment);
   font-family: var(--font-stamp);
   font-size: 1.25rem;
   letter-spacing: 0.28em;
