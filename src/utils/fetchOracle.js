@@ -18,44 +18,37 @@ Write 3-4 sentences as The Oracle. Do two things:
 Do NOT use emojis. Do NOT use generic phrases like "I think you'll enjoy" or "you might like".
 Do NOT give away plot twists or endings. Keep it under 90 words. No quotation marks needed.`;
 
-  const fetchWithRetry = async (retries = 3, initialDelay = 2000) => {
-    let currentDelay = initialDelay;
+  const FALLBACK = "The stars have aligned. This is your story.";
 
-    for (let i = 0; i < retries; i++) {
-      try {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { maxOutputTokens: 200, temperature: 0.9 },
-            }),
-          }
-        );
-
-        if (res.status === 429) {
-          console.warn(`Gemini 429 — retrying in ${currentDelay}ms (attempt ${i + 1})`);
-          await new Promise((r) => setTimeout(r, currentDelay));
-          currentDelay *= 2;
-          continue;
+  async function attempt(retriesLeft, delay) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 200, temperature: 0.9 },
+          }),
         }
+      );
 
-        const data = await res.json();
-        return (
-          data.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "The stars have aligned. This is your story."
-        );
-      } catch (err) {
-        console.warn("Oracle fetch error:", err);
-        if (i === retries - 1) return "The stars have aligned. This is your story.";
-        await new Promise((r) => setTimeout(r, currentDelay));
-        currentDelay *= 2;
+      if (res.status === 429 && retriesLeft > 0) {
+        console.warn(`Gemini 429 — retrying in ${delay}ms`);
+        await new Promise((r) => setTimeout(r, delay));
+        return attempt(retriesLeft - 1, delay * 2);
       }
-    }
-    return "The stars have aligned. This is your story.";
-  };
 
-  return await fetchWithRetry();
+      const data = await res.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || FALLBACK;
+    } catch (err) {
+      console.warn("Oracle fetch error:", err);
+      if (retriesLeft === 0) return FALLBACK;
+      await new Promise((r) => setTimeout(r, delay));
+      return attempt(retriesLeft - 1, delay * 2);
+    }
+  }
+
+  return attempt(3, 2000);
 }
