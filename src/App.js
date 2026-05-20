@@ -6,36 +6,8 @@ import ResultScreen from "./components/ResultScreen";
 import { QUESTIONS } from "./constants/questions";
 import { getRecommendation } from "./utils/recommendation";
 import { fetchOracleDialogue } from "./utils/fetchOracle";
+import {MusicPlayer} from "./components/MusicPlayer";
 
-function MusicPlayer() {
-  const audioRef = useRef(null);
-  const [muted, setMuted] = useState(false);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    audio.volume = 0.35;
-    audio.play().catch(() => {});
-  }, []);
-
-  const toggle = () => {
-    const audio = audioRef.current;
-    if (muted) {
-      audio.play();
-    } else {
-      audio.pause();
-    }
-    setMuted(!muted);
-  };
-
-  return (
-    <>
-      <audio ref={audioRef} src="/oracle-theme.mp3" loop />
-      <button className="music-btn" onClick={toggle} title="Toggle music">
-        {muted ? "♪" : "♫"}
-      </button>
-    </>
-  );
-}
 
 export default function App() {
   const [screen, setScreen] = useState("home");
