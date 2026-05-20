@@ -5,7 +5,6 @@ export function MusicPlayer() {
   const [playing, setPlaying] = useState(false);
   const hasStarted = useRef(false);
 
-  // Volume + loop-at-40s
   useEffect(() => {
     const audio = audioRef.current;
     audio.volume = 0.35;
@@ -20,13 +19,6 @@ export function MusicPlayer() {
     return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
   }, []);
 
-  // ── Mobile autoplay fix ──────────────────────────────────────────────────────
-  // Rules:
-  //  1. audio.play() MUST be called synchronously inside the user-gesture handler.
-  //  2. Never await or defer it — that breaks the gesture context on iOS/Android.
-  //  3. Use `capture: true` so we intercept the event before React's synthetic
-  //     layer, which can sometimes delay the callback out of the gesture window.
-  //  4. Attach directly to `document` (not `window`) — more reliable on iOS Safari.
   useEffect(() => {
     const audio = audioRef.current;
 
@@ -34,24 +26,18 @@ export function MusicPlayer() {
       if (hasStarted.current) return;
       hasStarted.current = true;
 
-      // Synchronous play — do NOT move this into a .then() or setTimeout
       const promise = audio.play();
-
-      // .then() is only for updating UI state, never for triggering play
       if (promise !== undefined) {
         promise
           .then(() => setPlaying(true))
           .catch(() => {
-            // Playback was rejected (e.g. user never interacted yet on a fresh
-            // page load). Reset so the next gesture can retry.
             hasStarted.current = false;
           });
       }
     };
 
-    const events = ["click", "touchend", "keydown"];
+    const events = ["click", "touchend", "keydown","scroll"];
 
-    // capture:true → fires before bubbling, closer to the raw gesture
     events.forEach((e) =>
       document.addEventListener(e, startAudio, { once: true, capture: true })
     );
@@ -66,7 +52,6 @@ export function MusicPlayer() {
   const toggle = () => {
     const audio = audioRef.current;
     if (audio.paused) {
-      // Also synchronous — no await
       const promise = audio.play();
       if (promise !== undefined) {
         promise.then(() => setPlaying(true)).catch(() => { });
