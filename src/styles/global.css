@@ -1,0 +1,227 @@
+/* ─── RESET ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── VARIABLES ─────────────────────────────────────────────────────────────── */
+:root {
+  --crimson:        #7a1a1a;
+  --crimson-deep:   #4a0d0d;
+  --crimson-mid:    #9e2a2a;
+  --curtain-red:    #8b1a1a;
+  --stripe-dark:    #3a2010;
+  --stripe-mid:     #5c3318;
+  --tobacco:        #c4944a;
+  --aged-paper:     #d4a96a;
+  --teal:           #4aada0;
+  --teal-light:     #7ecdc4;
+  --cream:          #f0d9a8;
+  --scallop:        #e8c84a;
+  --ink:            #1a0a04;
+
+  /* Legacy aliases — keeps any existing references working */
+  --parchment:      #f0d9a8;
+  --parchment-dark: #d4a96a;
+  --rose-dust:      #c4944a;
+  --rose-deep:      #4a0d0d;
+  --burgundy:       #7a1a1a;
+  --cream:          #f0d9a8;
+  --gold:           #c4944a;
+  --shadow:         rgba(26, 10, 4, 0.25);
+
+  --font-display:   'Rye', serif;
+  --font-body:      'IM Fell English', serif;
+  --font-italic:    'IM Fell English', serif;
+  --font-stamp:     'Special Elite', cursive;
+}
+
+/* ─── BASE ──────────────────────────────────────────────────────────────────── */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── APP WRAPPER ───────────────────────────────────────────────────────────── */
+.oracle-app {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── CARNIVAL STRIPE BACKGROUND ───────────────────────────────────────────── */
+.oracle-app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--stripe-dark) 0px,
+    var(--stripe-dark) 48px,
+    var(--stripe-mid)  48px,
+    var(--stripe-mid)  96px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── GRAIN OVERLAY ─────────────────────────────────────────────────────────── */
+.oracle-app::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+/* ─── STAGE FRAME ───────────────────────────────────────────────────────────── */
+.stage-frame {
+  position: fixed;
+  inset: 8px;
+  border: 6px solid var(--stripe-dark);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.6),
+    0 0 0 2px var(--tobacco);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ─── SCALLOP BAR ───────────────────────────────────────────────────────────── */
+.scallop-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--scallop);
+  z-index: 20;
+  pointer-events: none;
+  clip-path: polygon(
+    0% 100%, 0% 40%,
+    2% 0%, 4% 40%, 6% 0%, 8% 40%, 10% 0%, 12% 40%, 14% 0%, 16% 40%, 18% 0%, 20% 40%,
+    22% 0%, 24% 40%, 26% 0%, 28% 40%, 30% 0%, 32% 40%, 34% 0%, 36% 40%, 38% 0%, 40% 40%,
+    42% 0%, 44% 40%, 46% 0%, 48% 40%, 50% 0%, 52% 40%, 54% 0%, 56% 40%, 58% 0%, 60% 40%,
+    62% 0%, 64% 40%, 66% 0%, 68% 40%, 70% 0%, 72% 40%, 74% 0%, 76% 40%, 78% 0%, 80% 40%,
+    82% 0%, 84% 40%, 86% 0%, 88% 40%, 90% 0%, 92% 40%, 94% 0%, 96% 40%, 98% 0%, 100% 40%,
+    100% 100%
+  );
+}
+
+/* ─── FLOATING DECORATIONS ──────────────────────────────────────────────────── */
+.floater {
+  position: fixed;
+  z-index: 3;
+  pointer-events: none;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--r0, 0deg)); }
+  50%       { transform: translateY(-12px) rotate(var(--r1, 5deg)); }
+}
+
+.floater-star {
+  width: 22px;
+  height: 22px;
+  background: var(--teal);
+  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+}
+
+.floater-star.cream {
+  background: var(--cream);
+  opacity: 0.65;
+  width: 16px;
+  height: 16px;
+}
+
+.floater-swirl {
+  font-size: 28px;
+  color: var(--teal);
+  opacity: 0.8;
+  font-family: serif;
+  line-height: 1;
+}
+
+.floater-swirl.cream {
+  font-size: 22px;
+  color: var(--cream);
+  opacity: 0.45;
+}
+
+.floater-card {
+  width: 28px;
+  height: 40px;
+  background: var(--cream);
+  border-radius: 3px;
+  border: 1px solid var(--aged-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  opacity: 0.85;
+  transform: rotate(var(--r0, 0deg));
+}
+
+/* ─── SHARED ANIMATIONS ─────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
+@keyframes bookReveal {
+  from { opacity: 0; transform: translateY(32px) rotate(-1deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes questionIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.music-btn {
+  position: fixed;
+  top: 2.5rem;
+  right: 1.2rem;
+  z-index: 100;
+  background: var(--scallop);
+  border: none;
+  color: var(--crimson);
+  font-size: 1rem;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--crimson-deep), 0 0 0 1px var(--tobacco);
+  transition: all 0.18s ease;
+}
+
+.music-btn:hover {
+  background: var(--parchment-dark);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--stripe-dark), 0 0 0 1px var(--tobacco);
+}

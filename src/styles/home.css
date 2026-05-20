@@ -1,0 +1,237 @@
+/* ─── HOME SCREEN ───────────────────────────────────────────────────────────── */
+.home-screen {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── SHARED BG BASE ─────────────────────────────────────────────────────────── */
+.home-bg-mobile,
+.home-bg-desktop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* ─── MOBILE BG — shown only on mobile ───────────────────────────────────────── */
+.home-bg-mobile {
+  display: block;
+  background-position: center top;
+}
+
+/* ─── DESKTOP BG — hidden on mobile, shown on desktop ───────────────────────── */
+.home-bg-desktop {
+  display: none;
+  background-position: center center;
+  background-color: var(--stripe-dark);
+}
+
+/* ─── CARD PANEL ─────────────────────────────────────────────────────────────── */
+.home-card-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 3rem; /* clear scallop bar */
+}
+
+/* ─── DESKTOP ────────────────────────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .home-bg-mobile {
+    display: none;
+  }
+
+  .home-bg-desktop {
+    display: block;
+  }
+}
+
+/* ─── BOOK CONTAINER ─────────────────────────────────────────────────────────── */
+.book-container {
+  position: relative;
+  width: min(520px, 92vw);
+  animation: bookReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  z-index: 1;
+  filter: drop-shadow(0 0 60px rgba(122, 26, 26, 0.55));
+}
+
+.book-spine {
+  position: absolute;
+  left: -14px;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(to right, #1a0804, #3a1510, #1a0804);
+  border-radius: 4px 0 0 4px;
+  box-shadow: -4px 0 14px rgba(0, 0, 0, 0.6);
+}
+
+.book-page {
+  background: linear-gradient(145deg, var(--cream) 0%, #e8c97a 60%, #d4a830 100%);
+  border-radius: 2px 8px 8px 2px;
+  padding: 3.5rem 3rem 3rem;
+  position: relative;
+  box-shadow:
+    -8px 0 24px rgba(0, 0, 0, 0.4),
+    4px 10px 50px rgba(0, 0, 0, 0.6),
+    inset 4px 0 16px rgba(0, 0, 0, 0.1);
+}
+
+.book-page::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1.5px solid var(--tobacco);
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.book-page::after {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border: 1px dashed var(--tobacco);
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+/* ─── CORNER ORNAMENT ───────────────────────────────────────────────────────── */
+.corner-ornament {
+  position: absolute;
+  font-size: 16px;
+  color: var(--crimson);
+  opacity: 0.5;
+  line-height: 1;
+  user-select: none;
+}
+.corner-ornament.tl { top: 8px;    left: 22px;  }
+.corner-ornament.tr { top: 8px;    right: 8px;  }
+.corner-ornament.bl { bottom: 8px; left: 22px;  }
+.corner-ornament.br { bottom: 8px; right: 8px;  }
+
+/* ─── TYPOGRAPHY ────────────────────────────────────────────────────────────── */
+.home-eyebrow {
+  font-family: var(--font-stamp);
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 1.2rem;
+  opacity: 0.75;
+}
+
+.home-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.08;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.01em;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.home-title em {
+  font-style: italic;
+  color: var(--crimson);
+}
+
+.home-rule {
+  width: 40px;
+  height: 2px;
+  background: var(--tobacco);
+  margin: 1.4rem 0;
+  position: relative;
+}
+
+.home-rule::before,
+.home-rule::after {
+  content: '✦';
+  position: absolute;
+  font-size: 8px;
+  color: var(--tobacco);
+  top: -4px;
+}
+.home-rule::before { left: -14px; }
+.home-rule::after  { right: -14px; }
+
+.home-subtitle {
+  font-family: var(--font-italic);
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.8;
+  opacity: 0.7;
+  font-style: italic;
+  margin-bottom: 2.5rem;
+}
+
+/* ─── DIVE BUTTON ───────────────────────────────────────────────────────────── */
+.dive-btn {
+  display: inline-block;
+  background: var(--crimson);
+  color: var(--cream);
+  font-family: var(--font-stamp);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 0.85rem 2.2rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 3px 3px 0 var(--crimson-deep), 0 0 0 1px var(--tobacco);
+  position: relative;
+}
+
+.dive-btn::before {
+  content: '★';
+  margin-right: 0.5em;
+  color: var(--scallop);
+}
+
+.dive-btn::after {
+  content: '★';
+  margin-left: 0.5em;
+  color: var(--scallop);
+}
+
+.dive-btn:hover {
+  background: var(--crimson-deep);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--stripe-dark), 0 0 0 1px var(--tobacco);
+}
+
+.dive-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--stripe-dark);
+}
+
+/* ─── FOOTER TAGS ───────────────────────────────────────────────────────────── */
+.home-footer {
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--tobacco);
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  opacity: 0.45;
+}
+
+.home-footer-item {
+  font-family: var(--font-stamp);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blood);
+}
